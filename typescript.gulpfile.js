@@ -2,6 +2,8 @@ var gulp = require('gulp');
 var ts = require('gulp-typescript');
 var connect = require('gulp-connect');
 
+var util = require('gulp-util')
+
 var source = {
     ts: {
         main: 'src/app/main.ts',
@@ -22,6 +24,7 @@ gulp.task('ts', function () {
             out: 'bundle.js',
             target: 'ES5'
         }))
+        .on('error', util.log)
         .pipe(gulp.dest(destinations.ts))
 });
 
@@ -31,17 +34,10 @@ gulp.task('watch', function(){
 
 gulp.task('connect', function() {
     connect.server({
-        port: 42425
+        port: 42427
     });
 });
 
 
-
-gulp.task('exec', function() {
-
-    gulp.src('./build/*.*')
-        .pipe(exec('node ./build/bundle.js'))
-        .pipe(exec.reporter());
-});
 
 gulp.task('default', ['ts', 'watch', 'connect']);
