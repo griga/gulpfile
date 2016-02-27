@@ -1,7 +1,7 @@
 var gulp = require('gulp');
 var ts = require('gulp-typescript');
 var connect = require('gulp-connect');
-
+var uglify = require('gulp-uglify')
 var util = require('gulp-util')
 
 var source = {
@@ -18,14 +18,20 @@ var destinations = {
     ts: 'build'
 };
 
+var tsProject = ts.createProject('tsconfig.json');
+
 gulp.task('ts', function () {
-    return gulp.src(source.ts.src)
-        .pipe(ts({
-            out: 'bundle.js',
-            target: 'ES5'
-        }))
-        .on('error', util.log)
-        .pipe(gulp.dest(destinations.ts))
+    var tsResult = tsProject.src(source.ts.src)
+        .pipe(ts(tsProject));
+
+    return tsResult.js.pipe(gulp.dest(destinations.ts)).pipe(connect.reload())
+});
+
+gulp.task('prod', function () {
+    var tsResult = tsProject.src(source.ts.src)
+        .pipe(ts(tsProject));
+
+    return tsResult.js.pipe(uglify()).pipe(gulp.dest(destinations.ts))
 });
 
 gulp.task('watch', function(){
@@ -34,7 +40,8 @@ gulp.task('watch', function(){
 
 gulp.task('connect', function() {
     connect.server({
-        port: 42427
+        port: 42428,
+        livereload: true
     });
 });
 

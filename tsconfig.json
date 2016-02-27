@@ -1,0 +1,19 @@
+
+{
+  "compilerOptions": {
+    "target": "es5",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "removeComments": false,
+    "out": "bundle.js"
+  },
+  "exclude": [
+    "node_modules",
+    "src/typings/phaser.d.ts",
+    "src/typings/phaser.comments.d.ts",
+    "src/typings/pixi.d.ts",
+    "src/typings/pixi.comments.d.ts"
+  ]
+}
