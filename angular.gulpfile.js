@@ -1,3 +1,5 @@
+// npm install event-stream gulp gulp-concat gulp-angular-templatecache gulp-ng-annotate gulp-uglify gulp-babel lodash gulp-sass gulp-minify-css --save-dev
+
 var es = require('event-stream');
 var gulp = require('gulp');
 var concat = require('gulp-concat');
