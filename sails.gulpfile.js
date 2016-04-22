@@ -25,10 +25,8 @@ var sources = {
             'src/front/app/**/module.js',
             'src/front/app/**/!(module)*.js'
         ],
-        html: [
-            'src/front/app/**/*.html'
-        ],
-        out: 'bundle.js'
+        html: 'src/front/app/**/*.html',
+        out: 'bundle.js',
     },
     admin: {
         main: 'src/admin/app/main.js',
@@ -38,10 +36,8 @@ var sources = {
             'src/admin/app/**/module.js',
             'src/admin/app/**/!(module)*.js'
         ],
-        html: [
-            'src/admin/app/**/*.html'
-        ],
-        out: 'admin.bundle.js'
+        html: 'src/admin/app/**/*.html',
+        out: 'admin.bundle.js',
     },
     sass: {
         main: 'src/sass/style.scss',
@@ -167,7 +163,7 @@ gulp.task('vendor-css-dev', vendorCss.bind(this, 'dev'))
 gulp.task('vendor-css-prod', vendorCss.bind(this, 'prod'))
 
 
-function compileSass(target){
+function compileSass(target) {
     return gulp.src(sources.sass.src)
         .pipe(sass().on('error', sass.logError))
         .pipe(gulp.dest(destinations[target].css));
@@ -176,7 +172,7 @@ function compileSass(target){
 gulp.task('sass-dev', compileSass.bind(this, 'dev'));
 gulp.task('sass-prod', compileSass.bind(this, 'prod'));
 
-function copyAssets(target){
+function copyAssets(target) {
     return gulp.src(sources.assets.src)
         .pipe(gulp.dest(destinations[target].root))
 }
