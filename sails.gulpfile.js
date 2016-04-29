@@ -22,7 +22,7 @@ var sources = {
         src: [
             'src/front/app/main.js',
             'src/front/app/app.js',
-            'src/front/app/**/module.js',
+            'src/front/app/**/*module.js',
             'src/front/app/**/!(module)*.js'
         ],
         html: 'src/front/app/**/*.html',
@@ -33,7 +33,7 @@ var sources = {
         src: [
             'src/admin/app/main.js',
             'src/admin/app/app.js',
-            'src/admin/app/**/module.js',
+            'src/admin/app/**/*module.js',
             'src/admin/app/**/!(module)*.js'
         ],
         html: 'src/admin/app/**/*.html',
@@ -47,7 +47,8 @@ var sources = {
     },
     css: [
         "bower_components/codemirror/lib/codemirror.css",
-        "bower_components/codemirror/theme/material.css"
+        "bower_components/codemirror/theme/material.css",
+        "bower_components/codemirror/addon/display/fullscreen.css"
     ],
     vendor: {
         paths: {
@@ -56,6 +57,7 @@ var sources = {
                 "bower_components/moment/min/moment.min.js",
                 "bower_components/codemirror/lib/codemirror.js",
                 "bower_components/codemirror/mode/markdown/markdown.js",
+                "bower_components/codemirror/addon/display/fullscreen.js",
                 "bower_components/angular/angular.min.js",
                 "bower_components/angular-resource/angular-resource.min.js",
                 "bower_components/angular-animate/angular-animate.min.js",
@@ -71,6 +73,7 @@ var sources = {
                 "bower_components/moment/moment.js",
                 "bower_components/codemirror/lib/codemirror.js",
                 "bower_components/codemirror/mode/markdown/markdown.js",
+                "bower_components/codemirror/addon/display/fullscreen.js",
                 "bower_components/angular/angular.js",
                 "bower_components/angular-resource/angular-resource.js",
                 "bower_components/angular-animate/angular-animate.js",
