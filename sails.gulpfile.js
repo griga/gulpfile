@@ -14,7 +14,8 @@ var fs = require('fs');
 var babel = require('gulp-babel')
 var _ = require('lodash');
 var sass = require('gulp-sass');
-var livereload = require('gulp-livereload')
+var livereload = require('gulp-livereload');
+var nodemon = require('gulp-nodemon');
 
 var sources = {
     front: {
@@ -147,6 +148,24 @@ gulp.task('watch', function () {
     gulp.watch(sources.admin.html, ['compile-admin-dev']);
 });
 
+gulp.task('nodemon', function () {
+    nodemon({
+        
+         ext: 'js ejs html'
+        , env: {'NODE_ENV': 'development'},
+        verbose: true,
+        ignore: [
+            "data",
+            "bower_components",
+            "files",
+            "web",
+            "src",
+            ".tmp"
+
+        ]
+    })
+})
+
 function vendorJs(target) {
     var paths = sources.vendor.paths[target]
     paths.forEach(function (p) {
@@ -191,7 +210,7 @@ gulp.task('assets-prod', copyAssets.bind(this, 'prod'))
 
 
 gulp.task('prod', ['vendor-prod', 'vendor-css-prod', 'sass-prod', 'compile-admin-prod', 'compile-front-prod', 'assets-prod']);
-gulp.task('dev', ['vendor-dev', 'vendor-css-dev', 'sass-dev', 'compile-admin-dev', 'compile-front-dev', 'watch', 'assets-dev']);
+gulp.task('dev', ['nodemon', 'vendor-dev', 'vendor-css-dev', 'sass-dev', 'compile-admin-dev', 'compile-front-dev', 'watch', 'assets-dev']);
 gulp.task('default', ['dev']);
 
 var swallowError = function (error) {
