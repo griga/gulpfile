@@ -58,15 +58,18 @@ var sources = {
                 "bower_components/codemirror/lib/codemirror.js",
                 "bower_components/codemirror/mode/markdown/markdown.js",
                 "bower_components/codemirror/addon/display/fullscreen.js",
+                "bower_components/showdown/dist/showdown.min.js",
                 "bower_components/angular/angular.min.js",
                 "bower_components/angular-resource/angular-resource.min.js",
                 "bower_components/angular-animate/angular-animate.min.js",
                 "bower_components/angular-aria/angular-aria.min.js",
                 "bower_components/angular-messages/angular-messages.min.js",
+                "bower_components/angular-sanitize/angular-sanitize.min.js",
                 "bower_components/angular-material/angular-material.min.js",
                 "bower_components/angular-ui-router/release/angular-ui-router.min.js",
                 "bower_components/angular-ui-codemirror/ui-codemirror.min.js",
                 "bower_components/angular-easyfb/build/angular-easyfb.min.js",
+                "bower_components/ng-showdown/dist/ng-showdown.min.js"
             ],
             dev: [
                 "bower_components/lodash/dist/lodash.js",
@@ -74,15 +77,18 @@ var sources = {
                 "bower_components/codemirror/lib/codemirror.js",
                 "bower_components/codemirror/mode/markdown/markdown.js",
                 "bower_components/codemirror/addon/display/fullscreen.js",
+                "bower_components/showdown/dist/showdown.js",
                 "bower_components/angular/angular.js",
                 "bower_components/angular-resource/angular-resource.js",
                 "bower_components/angular-animate/angular-animate.js",
                 "bower_components/angular-aria/angular-aria.js",
                 "bower_components/angular-messages/angular-messages.js",
+                "bower_components/angular-sanitize/angular-sanitize.js",
                 "bower_components/angular-material/angular-material.js",
                 "bower_components/angular-ui-router/release/angular-ui-router.js",
                 "bower_components/angular-ui-codemirror/ui-codemirror.min.js",
                 "bower_components/angular-easyfb/build/angular-easyfb.js",
+                "bower_components/ng-showdown/dist/ng-showdown.js"
             ]
         }
     },
@@ -100,9 +106,9 @@ var destinations = {
         css: './.tmp/public/css',
     },
     prod: {
-        root: "./assets",
-        js: './assets/js',
-        css: './assets/css',
+        root: "./web",
+        js: './web/js',
+        css: './web/css',
     },
 };
 
