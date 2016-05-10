@@ -19,16 +19,27 @@ var livereload = require('gulp-livereload');
 var nodemon = require('gulp-nodemon');
 
 var sources = {
-    app: {
-        main: 'src/app/main.js',
+    front: {
+        main: 'src/front/app/main.js',
         src: [
-            'src/app/main.js',
-            'src/app/app.js',
-            'src/app/**/*module.js',
-            'src/app/**/!(module)*.js'
+            'src/front/app/main.js',
+            'src/front/app/app.js',
+            'src/front/app/**/*module.js',
+            'src/front/app/**/!(module)*.js'
         ],
-        html: 'src/app/**/*.html',
+        html: 'src/front/app/**/*.html',
         out: 'bundle.js',
+    },
+    admin: {
+        main: 'src/admin/app/main.js',
+        src: [
+            'src/admin/app/main.js',
+            'src/admin/app/app.js',
+            'src/admin/app/**/*module.js',
+            'src/admin/app/**/!(module)*.js'
+        ],
+        html: 'src/admin/app/**/*.html',
+        out: 'admin.bundle.js',
     },
     sass: {
         main: 'src/sass/style.scss',
@@ -51,6 +62,7 @@ var sources = {
                 "bower_components/codemirror/mode/markdown/markdown.js",
                 "bower_components/codemirror/addon/display/fullscreen.js",
                 "bower_components/showdown/dist/showdown.min.js",
+                "bower_components/showdown-classify/dist/showdown-classify.min.js",
                 "bower_components/highlightjs/highlight.pack.min.js",
                 "bower_components/angular/angular.min.js",
                 "bower_components/angular-resource/angular-resource.min.js",
@@ -71,6 +83,7 @@ var sources = {
                 "bower_components/codemirror/mode/markdown/markdown.js",
                 "bower_components/codemirror/addon/display/fullscreen.js",
                 "bower_components/showdown/dist/showdown.js",
+                "bower_components/showdown-classify/dist/showdown-classify.js",
                 "bower_components/highlightjs/highlight.pack.js",
                 "bower_components/angular/angular.js",
                 "bower_components/angular-resource/angular-resource.js",
@@ -128,17 +141,37 @@ function compile(appName, target) {
         .pipe(livereload());
 }
 
-gulp.task('compile-js-dev', compile.bind(this, 'app', 'dev'))
-gulp.task('compile-js-prod', compile.bind(this, 'app', 'prod'))
+gulp.task('compile-admin-dev', compile.bind(this, 'admin', 'dev'))
+gulp.task('compile-front-dev', compile.bind(this, 'front', 'dev'))
+gulp.task('compile-admin-prod', compile.bind(this, 'admin', 'prod'))
+gulp.task('compile-front-prod', compile.bind(this, 'front', 'prod'))
 
 gulp.task('watch', function () {
     livereload.listen()
     gulp.watch(sources.sass.src, ['sass-dev']);
-    gulp.watch(sources.app.src, ['compile-js-dev']);
-    gulp.watch(sources.app.html, ['compile-js-dev']);
+    gulp.watch(sources.front.src, ['compile-front-dev']);
+    gulp.watch(sources.front.html, ['compile-front-dev']);
+    gulp.watch(sources.admin.src, ['compile-admin-dev']);
+    gulp.watch(sources.admin.html, ['compile-admin-dev']);
     gulp.watch(sources.assets.src, ['assets-dev']);
 });
 
+gulp.task('nodemon', function () {
+    nodemon({
+        ext: 'js,ejs,html',
+        env: {'NODE_ENV': 'development'},
+        verbose: true,
+        ignore: [
+            "data",
+            "bower_components",
+            "files",
+            "web",
+            "src",
+            ".tmp"
+
+        ]
+    })
+})
 
 function vendorJs(target) {
     var paths = sources.vendor.paths[target]
@@ -184,8 +217,8 @@ gulp.task('assets-dev', copyAssets.bind(this, 'dev'))
 gulp.task('assets-prod', copyAssets.bind(this, 'prod'))
 
 
-gulp.task('prod', ['vendor-prod', 'vendor-css-prod', 'sass-prod', 'compile-js-prod', 'assets-prod']);
-gulp.task('dev', ['nodemon', 'vendor-dev', 'vendor-css-dev', 'sass-dev', 'compile-js-dev', 'compile-dev', 'watch', 'assets-dev']);
+gulp.task('prod', ['vendor-prod', 'vendor-css-prod', 'sass-prod', 'compile-admin-prod', 'compile-front-prod', 'assets-prod']);
+gulp.task('dev', ['nodemon', 'vendor-dev', 'vendor-css-dev', 'sass-dev', 'compile-admin-dev', 'compile-front-dev', 'watch', 'assets-dev']);
 gulp.task('default', ['dev']);
 
 var swallowError = function (error) {
