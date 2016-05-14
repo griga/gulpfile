@@ -15,31 +15,20 @@ var babel = require('gulp-babel')
 var iife = require('gulp-iife')
 var _ = require('lodash');
 var sass = require('gulp-sass');
-var livereload = require('gulp-livereload');
-var nodemon = require('gulp-nodemon');
+var connect = require('gulp-connect');
+var gulpIf = require('gulp-if');
 
 var sources = {
-    front: {
-        main: 'src/front/app/main.js',
+    app: {
+        main: 'src/app/main.js',
         src: [
-            'src/front/app/main.js',
-            'src/front/app/app.js',
-            'src/front/app/**/*module.js',
-            'src/front/app/**/!(module)*.js'
+            'src/app/main.js',
+            'src/app/app.js',
+            'src/app/**/*module.js',
+            'src/app/**/!(module)*.js'
         ],
-        html: 'src/front/app/**/*.html',
+        html: 'src/app/**/*.html',
         out: 'bundle.js',
-    },
-    admin: {
-        main: 'src/admin/app/main.js',
-        src: [
-            'src/admin/app/main.js',
-            'src/admin/app/app.js',
-            'src/admin/app/**/*module.js',
-            'src/admin/app/**/!(module)*.js'
-        ],
-        html: 'src/admin/app/**/*.html',
-        out: 'admin.bundle.js',
     },
     sass: {
         main: 'src/sass/style.scss',
@@ -47,55 +36,31 @@ var sources = {
             'src/sass/**/*.scss',
         ]
     },
-    css: [
-        "bower_components/codemirror/lib/codemirror.css",
-        "bower_components/codemirror/theme/material.css",
-        "bower_components/codemirror/addon/display/fullscreen.css",
-        "bower_components/highlightjs/styles/darkula.css",
-    ],
+    css: [],
     vendor: {
         paths: {
             prod: [
-                "bower_components/lodash/dist/lodash.min.js",
-                "bower_components/moment/min/moment.min.js",
-                "bower_components/codemirror/lib/codemirror.js",
-                "bower_components/codemirror/mode/markdown/markdown.js",
-                "bower_components/codemirror/addon/display/fullscreen.js",
-                "bower_components/showdown/dist/showdown.min.js",
-                "bower_components/showdown-classify/dist/showdown-classify.min.js",
-                "bower_components/highlightjs/highlight.pack.min.js",
+                // "bower_components/lodash/dist/lodash.min.js",
                 "bower_components/angular/angular.min.js",
-                "bower_components/angular-resource/angular-resource.min.js",
                 "bower_components/angular-animate/angular-animate.min.js",
                 "bower_components/angular-aria/angular-aria.min.js",
                 "bower_components/angular-messages/angular-messages.min.js",
-                "bower_components/angular-sanitize/angular-sanitize.min.js",
-                "bower_components/angular-material/angular-material.min.js",
-                "bower_components/angular-ui-router/release/angular-ui-router.min.js",
-                "bower_components/angular-ui-codemirror/ui-codemirror.min.js",
-                "bower_components/angular-easyfb/build/angular-easyfb.min.js",
-                "bower_components/ng-showdown/dist/ng-showdown.min.js"
+                // "bower_components/angular-material/angular-material.min.js",
+                "bower_components/angular-ui-router/release/angular-ui-router.js",
+                "bower_components/angular-material/modules/js/core/core.js",
+                "bower_components/angular-material/modules/js/input/input.js",
+
             ],
             dev: [
-                "bower_components/lodash/dist/lodash.js",
-                "bower_components/moment/moment.js",
-                "bower_components/codemirror/lib/codemirror.js",
-                "bower_components/codemirror/mode/markdown/markdown.js",
-                "bower_components/codemirror/addon/display/fullscreen.js",
-                "bower_components/showdown/dist/showdown.js",
-                "bower_components/showdown-classify/dist/showdown-classify.js",
-                "bower_components/highlightjs/highlight.pack.js",
+                // "bower_components/lodash/dist/lodash.js",
                 "bower_components/angular/angular.js",
-                "bower_components/angular-resource/angular-resource.js",
                 "bower_components/angular-animate/angular-animate.js",
                 "bower_components/angular-aria/angular-aria.js",
                 "bower_components/angular-messages/angular-messages.js",
-                "bower_components/angular-sanitize/angular-sanitize.js",
-                "bower_components/angular-material/angular-material.js",
-                "bower_components/angular-ui-router/release/angular-ui-router.js",
-                "bower_components/angular-ui-codemirror/ui-codemirror.min.js",
-                "bower_components/angular-easyfb/build/angular-easyfb.js",
-                "bower_components/ng-showdown/dist/ng-showdown.js"
+                // "bower_components/angular-material/angular-material.js",
+                "bower_components/angular-ui-router/release/angular-ui-router.min.js",
+                "bower_components/angular-material/modules/js/core/core.min.js",
+                "bower_components/angular-material/modules/js/input/input.min.js",
             ]
         }
     },
@@ -103,19 +68,24 @@ var sources = {
         src: [
             'src/static/**/*.*'
         ]
+    },
+    html: {
+        main: 'src/index.html'
     }
+
+
 };
 
 var destinations = {
     dev: {
-        root: "./.tmp/public",
-        js: './.tmp/public/js',
-        css: './.tmp/public/css',
+        root: "./.tmp",
+        js: './.tmp/js',
+        css: './.tmp/css',
     },
     prod: {
-        root: "./web",
-        js: './web/js',
-        css: './web/css',
+        root: "./dist",
+        js: './dist/js',
+        css: './dist/css',
     },
 };
 
@@ -130,48 +100,22 @@ function compile(appName, target) {
         .pipe(iife())
         .on('error', swallowError)
         .pipe(concat(sources[appName].out))
+        .pipe(gulpIf(target == 'prod', ngAnnotate()))
+        .pipe(gulpIf(target == 'prod', uglify()))
 
-    if (target == 'prod') {
-        bundle
-            .pipe(ngAnnotate())
-            .pipe(uglify())
-    }
-
-    return bundle.pipe(gulp.dest(destinations[target].js))
-        .pipe(livereload());
+    return bundle.pipe(gulp.dest(destinations[target].js)).pipe(connect.reload());
 }
 
-gulp.task('compile-admin-dev', compile.bind(this, 'admin', 'dev'))
-gulp.task('compile-front-dev', compile.bind(this, 'front', 'dev'))
-gulp.task('compile-admin-prod', compile.bind(this, 'admin', 'prod'))
-gulp.task('compile-front-prod', compile.bind(this, 'front', 'prod'))
+gulp.task('compile-dev', compile.bind(this, 'app', 'dev'))
+gulp.task('compile-prod', compile.bind(this, 'app', 'prod'))
 
 gulp.task('watch', function () {
-    livereload.listen()
     gulp.watch(sources.sass.src, ['sass-dev']);
-    gulp.watch(sources.front.src, ['compile-front-dev']);
-    gulp.watch(sources.front.html, ['compile-front-dev']);
-    gulp.watch(sources.admin.src, ['compile-admin-dev']);
-    gulp.watch(sources.admin.html, ['compile-admin-dev']);
+    gulp.watch(sources.app.src, ['compile-dev']);
+    gulp.watch(sources.app.html, ['compile-dev']);
     gulp.watch(sources.assets.src, ['assets-dev']);
 });
 
-gulp.task('nodemon', function () {
-    nodemon({
-        ext: 'js,ejs,html',
-        env: {'NODE_ENV': 'development'},
-        verbose: true,
-        ignore: [
-            "data",
-            "bower_components",
-            "files",
-            "web",
-            "src",
-            ".tmp"
-
-        ]
-    })
-})
 
 function vendorJs(target) {
     var paths = sources.vendor.paths[target]
@@ -202,7 +146,7 @@ function compileSass(target) {
     return gulp.src(sources.sass.src)
         .pipe(sass().on('error', sass.logError))
         .pipe(gulp.dest(destinations[target].css))
-        .pipe(livereload());
+        .pipe(connect.reload());
 }
 
 gulp.task('sass-dev', compileSass.bind(this, 'dev'));
@@ -211,14 +155,24 @@ gulp.task('sass-prod', compileSass.bind(this, 'prod'));
 function copyAssets(target) {
     return gulp.src(sources.assets.src)
         .pipe(gulp.dest(destinations[target].root))
+        .pipe(connect.reload())
 }
 
-gulp.task('assets-dev', copyAssets.bind(this, 'dev'))
-gulp.task('assets-prod', copyAssets.bind(this, 'prod'))
+gulp.task('assets-dev', copyAssets.bind(this, 'dev'));
+gulp.task('assets-prod', copyAssets.bind(this, 'prod'));
 
 
-gulp.task('prod', ['vendor-prod', 'vendor-css-prod', 'sass-prod', 'compile-admin-prod', 'compile-front-prod', 'assets-prod']);
-gulp.task('dev', ['nodemon', 'vendor-dev', 'vendor-css-dev', 'sass-dev', 'compile-admin-dev', 'compile-front-dev', 'watch', 'assets-dev']);
+gulp.task('connect', function () {
+    return connect.server({
+        root: '.tmp',
+        port: 9080,
+        livereload: true
+    })
+})
+
+
+gulp.task('prod', ['vendor-prod', 'vendor-css-prod', 'sass-prod', 'compile-prod', 'assets-prod']);
+gulp.task('dev', ['connect', 'vendor-dev', 'vendor-css-dev', 'sass-dev', 'compile-dev', 'watch', 'assets-dev']);
 gulp.task('default', ['dev']);
 
 var swallowError = function (error) {
@@ -230,6 +184,6 @@ var getTemplateStream = function (key) {
     return gulp.src(sources[key].html)
         .pipe(templateCache({
             root: 'app/',
-            module: 'app'
+            module: 'ng'
         }))
 };
