@@ -1,19 +1,17 @@
-
 {
   "compilerOptions": {
-    "target": "es5",
-    "moduleResolution": "node",
+    "outFile": "app.bundle.js",
+    "target": "ES5",
+    "module": "system",
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "moduleResolution": "node",
     "removeComments": false,
-    "out": "bundle.js"
+    "noImplicitAny": true,
+    "suppressImplicitAnyIndexErrors": true
   },
   "exclude": [
-    "node_modules",
-    "src/typings/phaser.d.ts",
-    "src/typings/phaser.comments.d.ts",
-    "src/typings/pixi.d.ts",
-    "src/typings/pixi.comments.d.ts"
+    "node_modules"
   ]
 }
