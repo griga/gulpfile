@@ -1,8 +1,8 @@
 {
-  "name": "angular2-gulp",
+  "name": "angular2-gulp-seed",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.html",
   "dependencies": {
     "angular2": "^2.0.0-beta.17",
     "es6-shim": "^0.35.1",
@@ -12,14 +12,20 @@
     "zone.js": "^0.6.12"
   },
   "devDependencies": {
+    "del": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
     "gulp-connect": "^4.0.0",
     "gulp-inline-ng2-template": "^1.1.4",
+    "gulp-open": "^2.0.0",
+    "gulp-sass": "^2.3.1",
     "gulp-sourcemaps": "^1.6.0",
+    "gulp-typescript": "^2.13.5",
     "typings": "^1.0.4"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "griga <grigach@gmail.com>",
   "license": "ISC"
 }
