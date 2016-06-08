@@ -12,7 +12,6 @@ var ngAnnotate = require('gulp-ng-annotate');
 var uglify = require('gulp-uglify');
 var fs = require('fs');
 var babel = require('gulp-babel')
-var iife = require('gulp-iife')
 var _ = require('lodash');
 var sass = require('gulp-sass');
 var livereload = require('gulp-livereload');
@@ -123,10 +122,8 @@ function compile(appName, target) {
         gulp.src(sources[appName].src)
         , getTemplateStream(appName))
         .pipe(babel({
-            presets: ['es2015']
-        }))
-        .pipe(iife({
-            useStrict: false,
+            presets: ['es2015'],
+            plugins: ['iife-wrap']
         }))
         .on('error', swallowError)
         .pipe(concat(sources[appName].out))
